@@ -9,10 +9,6 @@ from selenium.webdriver.common.by import By
 import os
 import time
 
-# start_url="http://www.edreams.com"
-# driver = webdriver.Chrome("C:\chromedriver.exe")
-# print(driver.__class__)
-# driver.get(start_url)
 class PageExplorer():
 
     def __init__(self, start_url="http://www.edreams.com", driver_element=None):
@@ -23,6 +19,9 @@ class PageExplorer():
             self.driver = webdriver.Chrome("C:\chromedriver.exe")
             self.driver.maximize_window()
             self.driver.get(start_url)
+
+        #Just wait 1 second since it may take a moment for page to properly load
+        time.sleep(1)
 
         self.service_country = os.getenv('COUNTRY_SERVICE','usa')
 

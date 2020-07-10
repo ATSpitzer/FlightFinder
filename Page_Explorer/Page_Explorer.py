@@ -4,10 +4,11 @@ from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-
-
+from selenium.webdriver.firefox.options import Options
+import platform
 import os
 import time
+from datetime import date
 
 class PageExplorer():
 
@@ -16,8 +17,14 @@ class PageExplorer():
             print("Existing driver found")
             self.driver = driver_element
         else:
-            self.driver = webdriver.Chrome("C:\chromedriver.exe")
-            self.driver.maximize_window()
+            os_system = platform.system()
+            if os_system == 'Windows':
+                self.driver = webdriver.Chrome("C:\chromedriver.exe")
+                self.driver.maximize_window()
+            elif os_system == 'Linux':
+                options = Options()
+                options.headless = True
+                self.driver = webdriver.Firefox(options=options)
             self.driver.get(start_url)
 
         #Just wait 1 second since it may take a moment for page to properly load
@@ -40,10 +47,15 @@ class PageExplorer():
     def get_driver_object(self):
         return self.driver
 
-    def check_url(self):
+    def check_url(self, screenshot=False, screenshot_name=None):
         title = self.driver.title
         url = self.driver.current_url
         print("URL: {cur_url}\tTitle: {title}".format(cur_url=url, title=title))
+
+        if screenshot:
+            if screenshot_name is None:
+                screenshot_name = "screen_at_{d}_{t}.png".format(t=time.time(), d=date.today().isoformat())
+            self.driver.save_screenshot(filename=screenshot_name)
 
     def close_driver(self):
         self.driver.close()

@@ -19,7 +19,9 @@ class PageExplorer():
         else:
             os_system = platform.system()
             if os_system == 'Windows':
-                self.driver = webdriver.Chrome("C:\chromedriver.exe")
+                options = webdriver.ChromeOptions()
+                options.add_argument('headless')
+                self.driver = webdriver.Chrome("C:\chromedriver.exe", options=options)
                 self.driver.maximize_window()
             elif os_system == 'Linux':
                 # fp = webdriver.FirefoxProfile(ub_profile)

@@ -1,7 +1,8 @@
 import os
 import platform
 import json
-from subprocess import call, check_output
+import subprocess
+import pexpect
 
 class VpnClient():
     def __init__(self, country=None):
@@ -9,9 +10,9 @@ class VpnClient():
         if os_system == 'Windows':
             config_dir="sample_configs"
         elif os_system == 'Linux':
-            config_dir = os.path.join('etc','shadowsocks-libev')
+            config_dir = os.path.join('/','etc','shadowsocks-libev')
 
-        ss_configs = os.listdir("sample_configs")
+        ss_configs = os.listdir(config_dir)
         print(ss_configs)
 
         self.config_options = {}
@@ -56,7 +57,8 @@ class VpnClient():
                 cntry_list = self.get_options()
                 assert country in cntry_list, "No vpn config matches {cntry}, try {cntry}.list".format(cntry=country, cntry_list=cntry_list)
                 command_string = "sudo systemctl stop shadowsocks-libev-local@{config_name}.service".format(config_name=self.config_options[country]['path'])
-        call(command_string)
+        completed=subprocess.run(command_string,  shell=True, check=True, stdout=subprocess.PIPE )
+        return completed
 
     def start_vpn(self, country=None, safe=False):
         if country is None:
@@ -67,7 +69,26 @@ class VpnClient():
             self.stop_vpn()
         self.set_country(country)
         command_string = "sudo systemctl start shadowsocks-libev-local@{config_name}.service".format(config_name=self.config_options[country]['path'])
-        call(command_string)
+        completed=subprocess.run(command_string,  shell=True, check=True, stdout=subprocess.PIPE )
+        return completed
+
+    def status_vpn(self, country=None):
+        if country is None:
+            if self.country is None:
+                country = 'all'
+            else:
+                country = self.country
+
+        if country is not None:
+            if country == 'all':
+                command_string = "sudo systemctl status shadowsocks-libev-local@*.service"
+            else:
+                cntry_list = self.get_options()
+                assert country in cntry_list, "No vpn config matches {cntry}, try {cntry}.list".format(cntry=country, cntry_list=cntry_list)
+                command_string = "sudo systemctl status shadowsocks-libev-local@{config_name}.service".format(config_name=self.config_options[country]['path'])
+        completed=subprocess.run(command_string,  shell=True, check=True, stdout=subprocess.PIPE )
+        print(completed.stdout)
+        return completed
 #
 # vc = VpnClient()
 # print(vc.config_options)

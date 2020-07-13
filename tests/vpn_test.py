@@ -1,7 +1,7 @@
 import string
 import unittest
 import random
-
+import os
 from Page_Explorer.LeakTest.LeakTest_Explorer import LeakTestExplorer
 from Vpn_Tool.VpnTool import VpnClient
 
@@ -19,6 +19,7 @@ class MyTestCase(unittest.TestCase):
         self.vpn_cli = VpnClient()
         self.le = LeakTestExplorer()
         self.test_screenshot_dir=''.join(random.choices(string.ascii_uppercase, k=5))
+        print("Saving screenshots at {ss_dir}".format(ss_dir=os.path.join('tmp',self.test_screenshot_dir)))
 
 
     def check_country(self, test_country_short):

@@ -73,18 +73,18 @@ class VpnClient():
 
     def status_vpn(self, country=None):
         if country is None:
-            if self.country is None:
-                country = 'all'
-            else:
+            if self.country is not None:
                 country = self.country
-
-        if country is not None:
-            if country == 'all':
-                command_string = "sudo systemctl status shadowsocks-libev-local@*.service"
             else:
-                cntry_list = self.get_options()
-                assert country in cntry_list, "No vpn config matches {cntry}, try {cntry}.list".format(cntry=country, cntry_list=cntry_list)
-                command_string = "sudo systemctl status shadowsocks-libev-local@{config_name}.service".format(config_name=self.config_options[country]['path'])
+                country = 'all'
+
+
+        if country == 'all':
+            command_string = "sudo systemctl status shadowsocks-libev-local@*.service"
+        else:
+            cntry_list = self.get_options()
+            assert country in cntry_list, "No vpn config matches {cntry}, try {cntry}.list".format(cntry=country, cntry_list=cntry_list)
+            command_string = "sudo systemctl status shadowsocks-libev-local@{config_name}.service".format(config_name=self.config_options[country]['path'])
         completed=subprocess.run(command_string,  shell=True, check=True, stdout=subprocess.PIPE )
         print(completed.stdout)
         return completed

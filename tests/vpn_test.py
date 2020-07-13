@@ -30,8 +30,19 @@ class MyTestCase(unittest.TestCase):
             print("Country tested not found in abbreviation dictionary")
             raise
 
+        print("Checking vpn")
+        self.vpn_cli.status_vpn()
+
+        print("Stopping vpn")
         self.vpn_cli.stop_vpn()
+
+        print("Starting vpn at {tcs}".format(tcs=test_country_short))
         self.vpn_cli.start_vpn(test_country_short)
+
+        print("Checking vpn")
+        self.vpn_cli.status_vpn()
+
+        print("Refreshing page")
         self.le.driver.refresh()
         self.le.screenshot_connection_info(screenshot_dir=self.test_screenshot_dir, screenshot_name="{cntry_test}".format(cntry_test=test_country_short))
         self.le.describe_connection()

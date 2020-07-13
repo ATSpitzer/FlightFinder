@@ -1,3 +1,5 @@
+from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
+
 from Page_Explorer.Page_Explorer import PageExplorer
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -14,12 +16,18 @@ class FlightResults(PageExplorer):
         # self.driver.save_screenshot(screen_name)
 
         search_bar_id="onelinebutton_search_manager"
-        WebDriverWait(self.driver, 30).until(
-            EC.element_to_be_clickable(
-                (By.ID, search_bar_id)))
+        try:
+            WebDriverWait(self.driver, 45).until(
+                EC.element_to_be_clickable(
+                    (By.ID, search_bar_id)))
+        except TimeoutException:
+            print("Timeout while looking for searchbar")
+            self.driver.save_screenshot("timeouterror_{cntry}.png".format(cntry=self.service_country))
+            raise
+
 
         print("Now looking for buttons")
-        # Sometimes, there is before getting to the page we want, there is a loading page. Wait for the loading page to end. This is indicated by the presence of a home page link since there are not clickable links on the loading page
+        # We want to wait fo the page to load then iterate through the buttons found
         WebDriverWait(self.driver, 20).until(
             EC.presence_of_element_located(
                 (By.TAG_NAME, "button")))
@@ -28,5 +36,17 @@ class FlightResults(PageExplorer):
         for b in buttons:
             if b.text == 'UNDERSTOOD':
                 print("Found UNDERSTOOD button. Clicking.")
-                b.click()
+                try:
+                    b.click()
+                except ElementClickInterceptedException:
+                    print("Timeout while looking for searchbar")
+                    self.driver.save_screenshot("sessionexpire_{cntry}.png".format(cntry=self.service_country))
+                    self.driver.find_element_by_id("sessionAboutToExpireAlert").click()
+                    b.click()
                 break
+
+        # selenium.common.exceptions.ElementClickInterceptedException: Message: Element < buttonclass ="odf-btn odf-btn-sm odf-space-outer-right-m odf-btn-primary ack_button" >
+        # is not clickable at point (140, 597) because another element
+        # < div id="sessionAboutToExpireAlert" class ="od-z-index-9999 ui_dialog_box ui_dialog_content odf-lightbox-bg open opened" >
+        # obscures it
+

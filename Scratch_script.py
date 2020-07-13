@@ -16,3 +16,4 @@ fr.check_url(screenshot=True, screenshot_name='from_in_home.png')
 
 fr2 = FlightResults(start_url=shortcut_string)
 fr2.check_url(screenshot=True, screenshot_name='from_com_search.png')
+fr2.close_driver()

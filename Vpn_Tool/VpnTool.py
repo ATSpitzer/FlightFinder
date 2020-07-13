@@ -2,7 +2,6 @@ import os
 import platform
 import json
 import subprocess
-import pexpect
 
 class VpnClient():
     def __init__(self, country=None):
@@ -22,7 +21,7 @@ class VpnClient():
             if "name" in config_contents.keys():
                 config_country=config_contents["name"]
                 self.config_options[config_country] = config_contents
-                self.config_options[config_country]["path"] = config_name
+                self.config_options[config_country]["path"] = config_name.replace('.json','')
 
 
 

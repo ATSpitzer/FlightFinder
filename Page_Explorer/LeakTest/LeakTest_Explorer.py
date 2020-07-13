@@ -31,6 +31,6 @@ class LeakTestExplorer(PageExplorer):
         print("country: {cntry}".format(cntry=self.connection_country))
 
     def screenshot_connection_info(self, screenshot_dir, screenshot_name):
-        ss_full = "{path}.png".format(path=os.path.join('tmp','vpn_test', screenshot_dir, screenshot_name))
+        ss_full = "{path}.png".format(path=os.path.join('/home','ubuntu','tmp','vpn_test', screenshot_dir, screenshot_name))
         print("Saving screenshot at {ss_full_path}".format(ss_full_path=ss_full))
         self.site_content.screenshot(ss_full)

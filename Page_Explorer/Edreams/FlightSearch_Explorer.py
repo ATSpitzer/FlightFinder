@@ -1,11 +1,4 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from Page_Explorer.Page_Explorer import PageExplorer
-import os
+from Page_Explorer.Edreams.Edreams_Explorer import PageExplorer
 import time
 
 class FlightSearch(PageExplorer):

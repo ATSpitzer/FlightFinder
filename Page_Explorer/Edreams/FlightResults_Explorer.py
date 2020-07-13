@@ -1,6 +1,6 @@
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
 
-from Page_Explorer.Page_Explorer import PageExplorer
+from Page_Explorer.Edreams.Edreams_Explorer import PageExplorer
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By

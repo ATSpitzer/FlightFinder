@@ -1,6 +1,5 @@
-from Page_Explorer.FlightSearch_Explorer import FlightSearch
-from Page_Explorer.FlightResults_Explorer import FlightResults
-import time
+from Page_Explorer.Edreams.FlightSearch_Explorer import FlightSearch
+from Page_Explorer.Edreams.FlightResults_Explorer import FlightResults
 
 shortcut_string="https://www.edreams.com/travel/#results/type=R;from=CGK;to=LOP;dep=2020-07-19;ret=2020-07-25;buyPath=FLIGHTS_HOME_SEARCH_FORM;internalSearch=true"
     # "https://www.edreams.in/travel/#results/type=R;from=CGK;to=LOP;dep=2020-07-19;ret=2020-07-25;buyPath=FLIGHTS_HOME_SEARCH_FORM;internalSearch=true"

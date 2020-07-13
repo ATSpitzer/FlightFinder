@@ -1,12 +1,12 @@
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
 
-from Page_Explorer.Edreams.Edreams_Explorer import PageExplorer
+from Page_Explorer.Edreams.Edreams_Explorer import EdreamsExplorer
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import time
 
-class FlightResults(PageExplorer):
+class FlightResults(EdreamsExplorer):
 
     def initial_page_setup(self):
         time.sleep(3)

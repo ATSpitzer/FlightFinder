@@ -1,7 +1,7 @@
-from Page_Explorer.Edreams.Edreams_Explorer import PageExplorer
+from Page_Explorer.Edreams.Edreams_Explorer import EdreamsExplorer
 import time
 
-class FlightSearch(PageExplorer):
+class FlightSearch(EdreamsExplorer):
 
     def initial_page_setup(self):
         buttons = self.driver.find_elements_by_tag_name('button')

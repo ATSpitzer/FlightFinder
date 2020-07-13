@@ -22,11 +22,11 @@ class PageExplorer():
                 self.driver = webdriver.Chrome("C:\chromedriver.exe")
                 self.driver.maximize_window()
             elif os_system == 'Linux':
-                fp = webdriver.FirefoxProfile(ub_profile)
-                fp.set_preference('network.proxy.type', 1)  # int
-                fp.set_preference('network.proxy.socks', '127.0.0.1')  # string
-                fp.set_preference('network.proxy.socks_port', 9090)  # int
-                fp.set_preference('network.proxy.socks_version', 5)
+                # fp = webdriver.FirefoxProfile(ub_profile)
+                # fp.set_preference('network.proxy.type', 1)  # int
+                # fp.set_preference('network.proxy.socks', '127.0.0.1')  # string
+                # fp.set_preference('network.proxy.socks_port', 9090)  # int
+                # fp.set_preference('network.proxy.socks_version', 5)
                 options = Options()
                 options.headless = True
                 self.driver = webdriver.Firefox(options=options) #, firefox_profile=fp)
@@ -34,8 +34,8 @@ class PageExplorer():
 
         #Just wait 1 second since it may take a moment for page to properly load
         time.sleep(1)
-
-        self.service_country = os.getenv('COUNTRY_SERVICE','usa')
+        #
+        # self.service_country = os.getenv('COUNTRY_SERVICE','usa')
         #
         # self.initial_page_setup()
 

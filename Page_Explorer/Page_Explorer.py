@@ -27,7 +27,7 @@ class PageExplorer():
                 fp = webdriver.FirefoxProfile()
                 fp.set_preference('network.proxy.type', 1)  # int
                 fp.set_preference('network.proxy.socks', '127.0.0.1')  # string
-                fp.set_preference('network.proxy.socks_port', 9090)  # int
+                fp.set_preference('network.proxy.socks_port', 1080)  # int
                 fp.set_preference('network.proxy.socks_version', 5)
                 options = Options()
                 options.headless = True

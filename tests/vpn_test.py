@@ -1,12 +1,6 @@
-import string
 import unittest
-import random
-import os
 from Page_Explorer.LeakTest.LeakTest_Explorer import LeakTestExplorer
 from Vpn_Tool.VpnTool import VpnClient
-
-
-
 
 class MyTestCase(unittest.TestCase):
     COUNTRY_CONV = {
@@ -17,10 +11,6 @@ class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.vpn_cli = VpnClient()
-        self.le = LeakTestExplorer()
-        self.test_screenshot_dir=''.join(random.choices(string.ascii_uppercase, k=5))
-        print("Saving screenshots at {ss_dir}".format(ss_dir=os.path.join('/home','ubuntu','tmp',self.test_screenshot_dir)))
-
 
     def check_country(self, test_country_short):
         test_ip = self.vpn_cli.config_options[test_country_short]['server']
@@ -42,13 +32,16 @@ class MyTestCase(unittest.TestCase):
         print("Checking vpn")
         self.vpn_cli.status_vpn()
 
-        print("Refreshing page")
-        self.le.driver.refresh()
-        self.le.screenshot_connection_info(screenshot_dir=self.test_screenshot_dir, screenshot_name="{cntry_test}".format(cntry_test=test_country_short))
+        self.le = LeakTestExplorer()
+        self.le.screenshot_connection_info(test_country_short)
         self.le.describe_connection()
 
-        assert test_ip == self.le.ip_address, "Expected dnsleakt to detect ip-address as {ip}, but instead found {fip}}".format(ip=test_ip, fip=self.le.ip_address)
-        assert test_country_long == self.le.connection_country, "Expected dnsleak to detect country as {tc}, but instead found {fc}".format(tc=test_country_long, fc=self.le.connection_country)
+        found_ip=self.le.ip_address
+        found_country=self.le.connection_country
+
+        self.le.close_driver()
+        assert test_ip == found_ip, "Expected dnsleakt to detect ip-address as {ip}, but instead found {fip}}".format(ip=test_ip, fip=found_ip)
+        assert test_country_long == found_country, "Expected dnsleak to detect country as {tc}, but instead found {fc}".format(tc=test_country_long, fc=found_country)
 
     def test_uk(self):
         self.check_country('uk')

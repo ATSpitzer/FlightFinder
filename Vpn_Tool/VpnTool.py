@@ -73,10 +73,10 @@ class VpnClient():
 
     def status_vpn(self, country=None):
         if country is None:
-            if self.country is not None:
-                country = self.country
-            else:
+            if self.country is None:
                 country = 'all'
+            else:
+                country = self.country
 
 
         if country == 'all':
@@ -88,14 +88,3 @@ class VpnClient():
         completed=subprocess.run(command_string,  shell=True, check=True, stdout=subprocess.PIPE )
         print(completed.stdout)
         return completed
-#
-# vc = VpnClient()
-# print(vc.config_options)
-# vc.get_options()
-#
-# vc = VpnClient()
-# vc.stop_vpn()
-# vc.start_vpn('uk')
-# vc.set_country('india')
-# vc.stop_vpn()
-# print(vc.country)

@@ -20,9 +20,6 @@ class MyTestCase(unittest.TestCase):
             print("Country tested not found in abbreviation dictionary")
             raise
 
-        print("Checking vpn")
-        self.vpn_cli.status_vpn()
-
         print("Stopping vpn")
         self.vpn_cli.stop_vpn()
 
@@ -39,18 +36,17 @@ class MyTestCase(unittest.TestCase):
         found_ip=self.le.ip_address
         found_country=self.le.connection_country
 
-        self.le.close_driver()
-        assert test_ip == found_ip, "Expected dnsleakt to detect ip-address as {ip}, but instead found {fip}}".format(ip=test_ip, fip=found_ip)
-        assert test_country_long == found_country, "Expected dnsleak to detect country as {tc}, but instead found {fc}".format(tc=test_country_long, fc=found_country)
-
+        try:
+            assert test_ip == found_ip, "Expected dnsleakt to detect ip-address as {ip}, but instead found {fip}}".format(ip=test_ip, fip=found_ip)
+            assert test_country_long == found_country, "Expected dnsleak to detect country as {tc}, but instead found {fc}".format(tc=test_country_long, fc=found_country)
+        finally:
+            self.le.close_driver()
+            
     def test_uk(self):
         self.check_country('uk')
 
     def test_india(self):
         self.check_country('india')
-
-        # self.assertEqual(True, False)
-
 
 if __name__ == '__main__':
     unittest.main()

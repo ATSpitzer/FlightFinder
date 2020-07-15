@@ -1,15 +1,5 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import ElementClickInterceptedException
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
 from Page_Explorer.Page_Explorer import PageExplorer
-from selenium.webdriver.firefox.options import Options
-import platform
-import os
-import time
-from datetime import date
+
 
 class LeakTestExplorer(PageExplorer):
 

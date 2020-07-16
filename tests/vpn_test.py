@@ -1,6 +1,6 @@
 import unittest
 from Page_Explorer.LeakTest.LeakTest_Explorer import LeakTestExplorer
-from Vpn_Tool.VpnTool import VpnClient
+from Vpn_Tool.VpnClient import VpnClient
 
 class MyTestCase(unittest.TestCase):
     COUNTRY_CONV = {

@@ -88,3 +88,4 @@ class VpnClient():
         completed=subprocess.run(command_string,  shell=True, check=True, stdout=subprocess.PIPE )
         print(completed.stdout)
         return completed
+

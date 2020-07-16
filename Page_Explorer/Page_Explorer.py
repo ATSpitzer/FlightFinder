@@ -1,12 +1,6 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import ElementClickInterceptedException
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
+# from selenium.webdriver.firefox.options import Options
 import platform
-import os
 import time
 from datetime import date
 
@@ -29,7 +23,7 @@ class PageExplorer():
                 fp.set_preference('network.proxy.socks', '127.0.0.1')  # string
                 fp.set_preference('network.proxy.socks_port', 1080)  # int
                 fp.set_preference('network.proxy.socks_version', 5)
-                options = Options()
+                options = webdriver.firefox.options.Options()
                 options.headless = True
                 self.driver = webdriver.Firefox(options=options, firefox_profile=fp)
             self.driver.get(start_url)

@@ -31,8 +31,8 @@ class VpnTool():
     def add_server(self):
         # print('adding server')
         parser = argparse.ArgumentParser("Create a client config for a vpn server")
-        parser.add_argument('--country', '-c', dest='country', type=str)
-        parser.add_argument('--address', '-a', dest='address', type=str)
+        parser.add_argument('--country', '-c', required=True, dest='country', type=str)
+        parser.add_argument('--address', '-a', required=True, dest='address', type=str)
         parser.add_argument('--config-dir', dest='config_dir', required=False, default=self.config_dir)
         args = parser.parse_args(sys.argv[1:])
 
@@ -54,7 +54,7 @@ class VpnTool():
 
 
 if __name__ == '__main__':
-    # if len(sys.argv)<=1 and platform.system()=='Windows':
-    #     # sys.argv = ['add_server', '-a','123.456.789.230','-c','uk']
+    if len(sys.argv)<=1 and platform.system()=='Windows':
+        sys.argv = ['add_server', '-a','123.456.789.230','-c','uk','-h']
     #     sys.argv = ['list_servers','-v']
     VpnTool()

@@ -48,5 +48,8 @@ class MyTestCase(unittest.TestCase):
     def test_india(self):
         self.check_country('india')
 
+    def test_usa(self):
+        self.check_country('usa')
+
 if __name__ == '__main__':
     unittest.main()

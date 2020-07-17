@@ -19,7 +19,7 @@ class VpnTool():
 
         parser = argparse.ArgumentParser("""Tool for starting and stopping VPN (mostly client). Options:
         \tlist_servers \t- list countries of available VPN servers (-v verbose)
-        \tadd_servers  \t- create a client config file for a new server (-c country -a public-ip-address)
+        \tadd_server   \t- create a client config file for a new server (-c country -a public-ip-address)
         \tstart_server \t- start client pointed at server with country (-c country)
         \tstop_server  \t- stop client pointed at server with country (-c country [default: all])
         \tstatus_server\t- status of client pointed at server with country (-c country [default: all])""")

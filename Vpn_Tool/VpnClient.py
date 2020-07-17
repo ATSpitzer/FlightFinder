@@ -12,24 +12,52 @@ class VpnClient():
             self.config_dir = os.path.join('/','etc','shadowsocks-libev')
 
         ss_configs = os.listdir(self.config_dir)
-        print(ss_configs)
-        self.config_options = {}
-        self.load_configs(ss_configs)
+        self.config_options = VpnClient.load_configs(self.config_dir)
         self.country = None
         if country is not None:
             self.set_country(country)
 
-    def load_configs(self, ss_configs):
-        def check_configs(self, config, config_name):
-            config_contents = json.load(config)
-            if "name" in config_contents.keys():
-                config_country=config_contents["name"]
-                self.config_options[config_country] = config_contents
-                self.config_options[config_country]["path"] = config_name.replace('.json','')
+    # def load_configs(self, ss_configs):
+    #     def check_configs(self, config, config_name):
+    #         config_contents = json.load(config)
+    #         if "name" in config_contents.keys():
+    #             config_country=config_contents["name"]
+    #             self.config_options[config_country] = config_contents
+    #             self.config_options[config_country]["path"] = config_name.replace('.json','')
+    #
+    #     for f in ss_configs:
+    #         with open(os.path.join(self.config_dir, f), 'r') as config_file:
+    #             check_configs(self, config_file, f)
 
-        for f in ss_configs:
-            with open(os.path.join(self.config_dir, f), 'r') as config_file:
-                check_configs(self, config_file, f)
+    @staticmethod
+    def add_config(config, config_name, config_options):
+        """
+        Takes a config json and checks if it has a name field. If so it adds it to the list of vpn options
+
+        :param config: string representation of the contents of a json file
+        :param config_name:  string of the filename of the checked config
+        :param config_options:  dictionary of checked files
+        :return: dictionary updated with the checked file
+        """
+        config_contents = json.load(config)
+        if "name" in config_contents.keys():
+            config_country=config_contents["name"]
+            config_options[config_country] = config_contents
+            config_options[config_country]["path"] = config_name.replace('.json','')
+        return config_options
+
+    @staticmethod
+    def load_configs(config_dir):
+        """
+        List valid vpn client configs in a directory
+        :param config_dir:  directory to check
+        :return: dictionary containing valid config files by country
+        """
+        config_options = {}
+        for filename in os.listdir(config_dir):
+            with open(os.path.join(config_dir, filename), 'r') as config_file:
+                VpnClient.add_config(config_file, filename, config_options)
+        return config_options
 
 
     def set_country(self, country):
@@ -88,13 +116,14 @@ class VpnClient():
         print(completed.stdout)
         return completed
 
-    def generate_config_file(self,server, country, password='FlightFinder', port=9090):
+    # @staticmethod
+    def generate_config_file(server, country, config_dir, password='FlightFinder', port=9090):
         assert server is not None or country is not None, "Country and server address must be set"
         config_json = json.dumps(
             {
                 "name":country,
                 "server":server,
-                "server-port":port,
+                "server_port":port,
                 "password":password,
                 "local":"127.0.0.1",
                 "local_port":1080,
@@ -106,6 +135,5 @@ class VpnClient():
         )
 
         file_name = "ssClientConfig_{country}.json".format(country=country)
-        with open(os.path.join(self.config_dir,file_name), 'w') as conf_j:
+        with open(os.path.join(config_dir,file_name), 'w') as conf_j:
             conf_j.write(config_json)
-

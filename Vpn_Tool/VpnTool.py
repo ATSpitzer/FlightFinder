@@ -18,8 +18,11 @@ class VpnTool():
             self.config_dir = os.path.join('/','etc','shadowsocks-libev')
 
         parser = argparse.ArgumentParser("""Tool for starting and stopping VPN (mostly client). Options:
-        \tlist_servers\t- list available countries of available VPN servers (-v verbose)
-        \tadd_servers \t- add a server (-c country -a public-ip-address)\n""")
+        \tlist_servers \t- list countries of available VPN servers (-v verbose)
+        \tadd_servers  \t- create a client config file for a new server (-c country -a public-ip-address)
+        \tstart_server \t- start client pointed at server with country (-c country)
+        \tstop_server  \t- stop client pointed at server with country (-c country [default: all])
+        \tstatus_server\t- status of client pointed at server with country (-c country [default: all])""")
         parser.add_argument('command',type=str, help='Command to run')
         args = parser.parse_args(sys.argv[0:1])
         if not hasattr(self, args.command):
@@ -52,9 +55,27 @@ class VpnTool():
         else:
             print(*country_options.keys())
 
+    def start_server(self):
+        parser = argparse.ArgumentParser("Start the vpn client with a connection to the specified country")
+        parser.add_argument('--country', '-c', required=True, dest='country', type=str, help="Country of vpn server. For a list of options run: python3 vpn_tool.py list_servers")
+        args = parser.parse_args(sys.argv[1:])
+        VpnClient().start_vpn(country=getattr(args,'country'))
+
+    def stop_server(self):
+        parser = argparse.ArgumentParser("Stop the vpn client with a connection to the specified country")
+        parser.add_argument('--country', '-c', dest='country', type=str, default='all', help="Country of vpn server. For a list of options run: python3 vpn_tool.py list_servers")
+        args = parser.parse_args(sys.argv[1:])
+        VpnClient().stop_vpn(country=getattr(args,'country'))
+
+    def status_server(self):
+        parser = argparse.ArgumentParser("Status the vpn client with a connection to the specified country")
+        parser.add_argument('--country', '-c', dest='country', type=str, default='all', help="Country of vpn server. For a list of options run: python3 vpn_tool.py list_servers")
+        args = parser.parse_args(sys.argv[1:])
+        VpnClient().status_vpn(country=getattr(args,'country'))
 
 if __name__ == '__main__':
     if len(sys.argv)<=1 and platform.system()=='Windows':
-        sys.argv = ['add_server', '-a','123.456.789.230','-c','uk','-h']
-    #     sys.argv = ['list_servers','-v']
+        # sys.argv = ['add_server', '-a','123.456.789.230','-c','uk','-h']
+        # sys.argv = ['list_servers','-v']
+        sys.argv = ['-h']
     VpnTool()

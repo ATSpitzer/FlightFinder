@@ -19,3 +19,6 @@ class HotelSearchLocators():
     HOTEL_PRETAX = (By.XPATH, './/p[@class="price"]/span/div[1]')
 
     HOTEL_SELECT = (By.CLASS_NAME, "select font-bold")
+
+    #Hotels with member element do not list price and should be skipped over
+    HOTEL_MEMBER = (By.CLASS_NAME, "list-card-member")

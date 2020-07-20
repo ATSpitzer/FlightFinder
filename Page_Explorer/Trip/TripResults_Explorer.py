@@ -8,8 +8,8 @@ import random
 
 class TripResultsExplorer(PageExplorer):
     SAMPLE_RESULT="https://us.trip.com/hotels/list?city=810&countryId=0&checkin=2020/08/03&checkout=2020/08/04&optionId=810&optionType=City&directSearch=1&optionName=Colombo%20Spa&display=Colombo&crn=1&adult=1&children=0&searchBoxArg=t&travelPurpose=0&ctm_ref=ix_sb_dl&domestic=1"
-    def __init__(self, start_url="http://us.trip.com", driver_element=None):
-        super().__init__(start_url=start_url, driver_element=driver_element)
+    def __init__(self, start_url="http://us.trip.com", driver_element=None, **kwargs):
+        super().__init__(start_url=start_url, driver_element=driver_element, **kwargs)
         hotel_list_page = self.driver.find_element(*hsl.HOTEL_LIST_PAGE)
         self.hotel_list_parent = hotel_list_page.find_element(*hsl.HOTEL_LIST)
         self.hotel_list = self.hotel_list_parent.find_elements(*hsl.HOTEL_CARD)

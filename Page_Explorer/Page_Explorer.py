@@ -24,7 +24,7 @@ class PageExplorer():
                 config_dir = os.path.join('/','etc','shadowsocks-libev')
                 fp = webdriver.FirefoxProfile()
                 if country is None:
-                    cocks_port = 1080
+                    socks_port = 1080
                 else:
                     country_options = VpnClient.load_configs(config_dir=config_dir)
                     socks_port = country_options[country]['local_port']

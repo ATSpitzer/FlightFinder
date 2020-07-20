@@ -3,10 +3,13 @@ from selenium import webdriver
 import platform
 import time
 from datetime import date
+from Vpn_Tool.VpnClient import VpnClient
+import json
+import os
 
 class PageExplorer():
 
-    def __init__(self, start_url="http://www.edreams.com", driver_element=None):
+    def __init__(self, start_url="http://www.edreams.com", driver_element=None, country=None):
         if driver_element:
             print("Existing driver found")
             self.driver = driver_element
@@ -18,10 +21,17 @@ class PageExplorer():
                 self.driver = webdriver.Chrome("C:\chromedriver.exe", options=options)
                 self.driver.maximize_window()
             elif os_system == 'Linux':
+                config_dir = os.path.join('/','etc','shadowsocks-libev')
                 fp = webdriver.FirefoxProfile()
+                if country is None:
+                    cocks_port = 1080
+                else:
+                    country_options = VpnClient.load_configs(config_dir=config_dir)
+                    socks_port = country_options[country]['local_port']
+
                 fp.set_preference('network.proxy.type', 1)  # int
                 fp.set_preference('network.proxy.socks', '127.0.0.1')  # string
-                fp.set_preference('network.proxy.socks_port', 1080)  # int
+                fp.set_preference('network.proxy.socks_port', socks_port)  # int
                 fp.set_preference('network.proxy.socks_version', 5)
                 options = webdriver.firefox.options.Options()
                 options.headless = True
@@ -49,4 +59,7 @@ class PageExplorer():
             self.driver.save_screenshot(filename=screenshot_name)
 
     def close_driver(self):
-        self.driver.close
+        self.driver.close()
+
+    def kill_driver(self):
+        self.driver.quit()

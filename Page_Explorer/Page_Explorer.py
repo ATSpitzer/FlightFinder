@@ -26,8 +26,10 @@ class PageExplorer():
                 if country is None:
                     socks_port = 1080
                 else:
-                    country_options = VpnClient.load_configs(config_dir=config_dir)
-                    socks_port = country_options[country]['local_port']
+                    vpn = VpnClient(country)
+                    socks_port = vpn.config_options[country]['local_port']
+                    if vpn.status_vpn().returncode != 0:
+                        vpn.start_vpn()
 
                 fp.set_preference('network.proxy.type', 1)  # int
                 fp.set_preference('network.proxy.socks', '127.0.0.1')  # string

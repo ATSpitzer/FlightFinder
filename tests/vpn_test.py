@@ -8,12 +8,12 @@ class MyTestCase(unittest.TestCase):
         # "uk": "United Kingdom",
         "india": "India"
     }
-    vpn_dictionary = {}
-    for country in COUNTRY_CONV:
-        vpn_dictionary[country] = {}
-        vpn_dictionary[country]['vpn'] = VpnClient(country)
-        vpn_dictionary[country]['vpn'].start_vpn()
-        vpn_dictionary[country]['webdriver'] = LeakTestExplorer(country=country)
+    # vpn_dictionary = {}
+    # for country in COUNTRY_CONV:
+    #     vpn_dictionary[country] = {}
+    #     vpn_dictionary[country]['vpn'] = VpnClient(country)
+    #     vpn_dictionary[country]['vpn'].start_vpn()
+    #     vpn_dictionary[country]['webdriver'] = LeakTestExplorer(country=country)
 
     def check_country(self, test_country_short):
         test_ip = self.vpn_dictionary[test_country_short]['vpn'].config_options[test_country_short]['server']
@@ -23,17 +23,8 @@ class MyTestCase(unittest.TestCase):
             print("Country tested not found in abbreviation dictionary")
             raise
 
-        # print("Stopping vpn")
-        # self.vpn_cli.stop_vpn()
-        #
-        # print("Starting vpn at {tcs}".format(tcs=test_country_short))
-        # self.vpn_cli.start_vpn(test_country_short)
-        #
-        # print("Checking vpn")
-        # self.vpn_cli.status_vpn()
-        le = self.vpn_dictionary[test_country_short]['webdriver']
-        # self.le = LeakTestExplorer()
-        # self.le.screenshot_connection_info(test_country_short)
+        # le = self.vpn_dictionary[test_country_short]['webdriver']
+        le = LeakTestExplorer(test_country_short)
         le.describe_connection()
 
         found_ip=le.ip_address

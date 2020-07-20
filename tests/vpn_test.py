@@ -8,18 +8,15 @@ class MyTestCase(unittest.TestCase):
         # "uk": "United Kingdom",
         "india": "India"
     }
-
-    def setUp(self):
-        # self.vpn_cli = VpnClient()
-        self.vpn_dictionary = {}
-        for country in self.COUNTRY_CONV:
-            self.vpn_dictionary[country] = {}
-            self.vpn_dictionary[country]['vpn'] = VpnClient(country)
-            self.vpn_dictionary[country]['vpn'].start_vpn()
-            self.vpn_dictionary[country]['webdriver'] = LeakTestExplorer(country=country)
+    vpn_dictionary = {}
+    for country in COUNTRY_CONV:
+        vpn_dictionary[country] = {}
+        vpn_dictionary[country]['vpn'] = VpnClient(country)
+        vpn_dictionary[country]['vpn'].start_vpn()
+        vpn_dictionary[country]['webdriver'] = LeakTestExplorer(country=country)
 
     def check_country(self, test_country_short):
-        test_ip = self.vpn_cli.config_options[test_country_short]['server']
+        test_ip = self.vpn_dictionary[test_country_short]['vpn'].config_options[test_country_short]['server']
         try:
             test_country_long = self.COUNTRY_CONV[test_country_short]
         except:
@@ -39,14 +36,14 @@ class MyTestCase(unittest.TestCase):
         # self.le.screenshot_connection_info(test_country_short)
         le.describe_connection()
 
-        found_ip=self.le.ip_address
-        found_country=self.le.connection_country
+        found_ip=le.ip_address
+        found_country=le.connection_country
 
         try:
             assert test_ip == found_ip, "Expected dnsleakt to detect ip-address as {ip}, but instead found {fip}}".format(ip=test_ip, fip=found_ip)
             assert test_country_long == found_country, "Expected dnsleak to detect country as {tc}, but instead found {fc}".format(tc=test_country_long, fc=found_country)
         finally:
-            self.le.close_driver()
+            le.kill_driver()
             
     # def test_uk(self):
     #     self.check_country('uk')

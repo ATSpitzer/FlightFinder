@@ -69,12 +69,6 @@ class VpnClient():
         assert country in self.get_options(), "Tried to set vpn to {cntry} but no config found. Try {cntry_list}".format(cntry=country, cntry_list=cntry_list)
         self.country = country
 
-    def get_connection_var(self, country=None):
-        if country is None:
-            country = self.country
-            assert country is None, "Country not set"
-
-
     def get_options(self):
         country_options = list(self.config_options)
         return country_options

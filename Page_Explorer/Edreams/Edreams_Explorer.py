@@ -13,8 +13,8 @@ from datetime import date
 
 class EdreamsExplorer(PageExplorer):
 
-    def __init__(self, start_url="http://www.edreams.com", driver_element=None):
-        super().__init__(start_url=start_url, driver_element=driver_element)
+    def __init__(self, start_url="http://www.edreams.com", driver_element=None, **kwargs):
+        super().__init__(start_url=start_url, driver_element=driver_element, **kwargs)
         self.initial_page_setup()
 
     def initial_page_setup(self):

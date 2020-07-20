@@ -3,9 +3,8 @@ from Page_Explorer.Page_Explorer import PageExplorer
 
 class LeakTestExplorer(PageExplorer):
 
-    def __init__(self, start_url="http://www.dnsleaktest.com", driver_element=None):
-        super().__init__(start_url=start_url, driver_element=driver_element)
-
+    def __init__(self, start_url="http://www.dnsleaktest.com", driver_element=None, **kwargs):
+        super().__init__(start_url=start_url, driver_element=driver_element, **kwargs)
         self.site_content=self.driver.find_element_by_class_name("welcome")
         # self.site_content.screenshot('s_c.png')
 

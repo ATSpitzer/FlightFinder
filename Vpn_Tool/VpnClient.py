@@ -61,6 +61,10 @@ class VpnClient():
 
 
     def set_country(self, country):
+        """
+        :param country: Set or change the country the VpnServer will start/stop/status
+        :return:
+        """
         cntry_list=self.get_options()
         assert country in self.get_options(), "Tried to set vpn to {cntry} but no config found. Try {cntry_list}".format(cntry=country, cntry_list=cntry_list)
         self.country = country
@@ -112,21 +116,29 @@ class VpnClient():
             cntry_list = self.get_options()
             assert country in cntry_list, "No vpn config matches {cntry}, try {cntry}.list".format(cntry=country, cntry_list=cntry_list)
             command_string = "sudo systemctl status shadowsocks-libev-local@{config_name}.service".format(config_name=self.config_options[country]['path'])
-        completed=subprocess.run(command_string,  shell=True, check=True, stdout=subprocess.PIPE )
-        print(completed.stdout)
+        completed=subprocess.run(command_string,  shell=True, check=False, stdout=subprocess.PIPE)
         return completed
 
-    # @staticmethod
-    def generate_config_file(server, country, config_dir, password='FlightFinder', port=9090):
+    @staticmethod
+    def generate_config_file(server, country, config_dir, password='FlightFinder', server_port=9090, local_port=1080):
+        """
+        :param server: Public IP of the VPN server client will point to
+        :param country:  Country the VPN server will point to
+        :param config_dir: Location of config file should be /etc/shadowsocks-libev
+        :param password: Password to connect to VPN
+        :param server_port:  VPN server port
+        :param local_port: Port for local machine
+        :return:
+        """
         assert server is not None or country is not None, "Country and server address must be set"
         config_json = json.dumps(
             {
                 "name":country,
                 "server":server,
-                "server_port":port,
+                "server_port":server_port,
                 "password":password,
                 "local":"127.0.0.1",
-                "local_port":1080,
+                "local_port":local_port,
                 "fast_open":False,
                 "timeout":60,
                 "method":"aes-256-gcm"

@@ -4,9 +4,9 @@ import json
 import pandas
 
 
-URL_1="https://us.trip.com/hotels/list?city=3789&countryId=0&checkin=2020/10/23&checkout=2020/10/24&optionId=3789&optionType=IntlCity&directSearch=1&optionName=wailea&display=Hawaii-Maui&crn=1&adult=1&children=0&searchBoxArg=t&travelPurpose=0&ctm_ref=ix_sb_dl&domestic=1&highPrice=-1&barCurr=USD"
-URL_2="https://us.trip.com/hotels/list?city=3789&countryId=0&checkin=2021/03/02&checkout=2021/03/03&optionId=3789&optionType=IntlCity&directSearch=1&optionName=wailea&display=Hawaii-Maui&crn=1&adult=1&children=0&searchBoxArg=t&travelPurpose=0&ctm_ref=ix_sb_dl&domestic=1&highPrice=-1&barCurr=USD"
-URL_3="https://us.trip.com/hotels/list?city=3789&countryId=0&checkin=2021/02/02&checkout=2021/02/03&optionId=3789&optionType=IntlCity&directSearch=1&optionName=wailea&display=Hawaii-Maui&crn=1&adult=1&children=0&searchBoxArg=t&travelPurpose=0&ctm_ref=ix_sb_dl&domestic=1&highPrice=-1&barCurr=USD"
+URL_1="https://us.trip.com/hotels/list?city=3789&countryId=66&checkin=2021/02/08&checkout=2021/02/09&optionId=3789&optionType=IntlCity&directSearch=0&display=Hawaii-Maui&crn=1&adult=1&children=0&searchBoxArg=t&travelPurpose=0&ctm_ref=ix_sb_dl&domestic=0"
+URL_2="https://us.trip.com/hotels/list?city=3789&countryId=66&checkin=2021/03/08&checkout=2021/03/09&optionId=3789&optionType=IntlCity&directSearch=0&display=Hawaii-Maui&crn=1&adult=1&children=0&searchBoxArg=t&travelPurpose=0&ctm_ref=ix_sb_dl&domestic=0"
+URL_3="https://us.trip.com/hotels/list?city=3789&countryId=66&checkin=2021/01/08&checkout=2021/01/09&optionId=3789&optionType=IntlCity&directSearch=0&display=Hawaii-Maui&crn=1&adult=1&children=0&searchBoxArg=t&travelPurpose=0&ctm_ref=ix_sb_dl&domestic=0"
 
 
 def perform_search(num, URL):

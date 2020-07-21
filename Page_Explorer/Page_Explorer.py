@@ -59,6 +59,7 @@ class PageExplorer():
             if screenshot_name is None:
                 screenshot_name = "screen_at_{d}_{t}.png".format(t=time.time(), d=date.today().isoformat())
             self.driver.save_screenshot(filename=screenshot_name)
+        return url
 
     def close_driver(self):
         self.driver.close()

@@ -1,11 +1,45 @@
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from Page_Explorer.Page_Explorer import PageExplorer
 from Page_Explorer.Trip.locators import HotelSearchLocators as hsl
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 class TripResultsExplorer(PageExplorer):
     SAMPLE_RESULT="https://us.trip.com/hotels/list?city=810&countryId=0&checkin=2020/08/03&checkout=2020/08/04&optionId=810&optionType=City&directSearch=1&optionName=Colombo%20Spa&display=Colombo&crn=1&adult=1&children=0&searchBoxArg=t&travelPurpose=0&ctm_ref=ix_sb_dl&domestic=1"
     def __init__(self, start_url="http://us.trip.com", driver_element=None, **kwargs):
         super().__init__(start_url=start_url, driver_element=driver_element, **kwargs)
+        # print("Page loaded")
+        # self.driver.maximize_window()
+        # self.driver.find_element(*hsl.HOTEL_FOOTER).location_once_scrolled_into_view
+        # self.driver.save_screenshot('starting_page.png')
+        # WebDriverWait(self.driver, 5).until(EC.presence_of_element_located(
+        #     (By.CLASS_NAME, 'more-hotel-title font-bold')))
+        # print("More results found")
+
+        def check_bottom():
+            try:
+                bottom = self.driver.find_element(*hsl.NO_MORE_RESULTS)
+                return bottom.text == "No additional hotels available"
+            except NoSuchElementException:
+                return False
+
+        bottom = check_bottom()
+        while not bottom:
+            WebDriverWait(self.driver, 3).until(EC.presence_of_element_located(hsl.MORE_RESULTS_2))
+            self.driver.find_element(*hsl.MORE_RESULTS_2).location_once_scrolled_into_view
+            WebDriverWait(self.driver, 4).until(EC.invisibility_of_element(hsl.RESULTS_LOADING))
+            # try:
+            #     WebDriverWait(self.driver, 4).until(EC.presence_of_element_located(hsl.MORE_RESULTS_3))
+            # except TimeoutException:
+            #     bottom = check_bottom()
+            bottom = check_bottom()
+            hotel_list_page = self.driver.find_element(*hsl.HOTEL_LIST_PAGE)
+            self.hotel_list_parent = hotel_list_page.find_element(*hsl.HOTEL_LIST)
+            self.hotel_list = self.hotel_list_parent.find_elements(*hsl.HOTEL_CARD)
+            print(len(self.hotel_list))
+
+
         hotel_list_page = self.driver.find_element(*hsl.HOTEL_LIST_PAGE)
         self.hotel_list_parent = hotel_list_page.find_element(*hsl.HOTEL_LIST)
         self.hotel_list = self.hotel_list_parent.find_elements(*hsl.HOTEL_CARD)

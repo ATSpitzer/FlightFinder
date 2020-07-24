@@ -110,62 +110,69 @@ class TripResultsExplorer(PageExplorer):
         dup_count = 0
         self.hotel_list_parent.screenshot('hotel_list.png')
         for card in self.hotel_list:
-            try:
-                card_local = card.location_once_scrolled_into_view
-                hc = HotelCard(card)
-                entry = hc.get_price_dictionary()
-                if entry['title'] in results.keys():
-                    duplicates[dup_count] = {entry['title']:entry['result'],'location':card_local}
-                    card.screenshot("screenshots/{title}_{c}.png".format(title=entry['title'], c=dup_count))
-                    dup_count = dup_count + 1
-                else:
-                    results[entry['title']] = entry['result']
-                    # try:
-                    #     if float(entry['result']['real-price'].replace('$','').replace(',','')) > 1000:
-                    #         print("OOPS")
-                    #         # print('{t}:\t {p}'.format(p=float(entry['result']['real-price'].replace('$','').replace(',',''),t=entry['title']))
-                    #         # card.screenshot("screenshots/{title}.png".format(title=entry['title']))
-                    # except:
-                    #     print("ex hit")
-                    #     pass
-                    #     # print(entry)
-                    print(". . . . . . . . . . . . . . . . . . . . . . . . . . ")
-                    print('{t}:\t {p}'.format(p=entry['result']['real-price'].replace('$', ''), t=entry['title']))
-                    print("{t}\n\tBefore tax: {p1}\tAfter tax: {p2}".format(t=hc.title,
-                                                                                          p1=hc.price_displayed,
-                                                                                          p2=hc.post_tax))
+            card_local = card.location_once_scrolled_into_view
+            hc = HotelCard(card)
+            entry = hc.get_price_dictionary()
+            if entry['title'] in results.keys():
+                duplicates[dup_count] = {entry['title']:entry['result'],'location':card_local}
+                card.screenshot("screenshots/{title}_{c}.png".format(title=entry['title'], c=dup_count))
+                dup_count = dup_count + 1
+            else:
+                results[entry['title']] = entry['result']
+                # try:
+                #     if float(entry['result']['real-price'].replace('$','').replace(',','')) > 1000:
+                #         print("OOPS")
+                #         # print('{t}:\t {p}'.format(p=float(entry['result']['real-price'].replace('$','').replace(',',''),t=entry['title']))
+                #         # card.screenshot("screenshots/{title}.png".format(title=entry['title']))
+                # except:
+                #     print("ex hit")
+                #     pass
+                #     # print(entry)
+                print(". . . . . . . . . . . . . . . . . . . . . . . . . . ")
+                print('{t}:\t {p}'.format(p=entry['result']['real-price'].replace('$', ''), t=entry['title']))
+                print("{t}\n\tBefore tax: {p1}\tAfter tax: {p2}".format(t=hc.title,
+                                                                                      p1=hc.price_displayed,
+                                                                                      p2=hc.post_tax))
 
-                    # entry = hc.get_price_dictionary()
-                    results[entry['title']] = entry['result']
-            except NoSuchElementException:
-                print("Exception reading card. Probably no price")
-                if len(card.find_elements(*hsl.HOTEL_MEMBER)) >= 1:
-                    print("'Member' found, skipping")
-                elif len(card.find_elements(*hsl.HOTEL_SOLD_OUT)) >=1:
-                    print("Hotel Sold out")
-                else:
-                    raise
+                # entry = hc.get_price_dictionary()
+                results[entry['title']] = entry['result']
         # print(pandas.read_json(json.dumps(duplicates), orient='index'))
         return results
 
 class HotelCard(object):
     def __init__(self, card):
-        card.location_once_scrolled_into_view
-        self.title = card.find_element(*hsl.HOTEL_TITLE).text
-        price_section = card.find_element(*hsl.HOTEL_PRICE_SECTION)
-        self.post_tax = price_section.find_element(*hsl.HOTEL_TAX_SECTION).text.replace('After tax ','')
-        self.price_pretax = card.find_element(*hsl.HOTEL_PRETAX)
-        self.price_displayed = self.price_pretax.text
-        promos = price_section.text.splitlines()
         try:
-            self.promos_trimmed = promos[1 + promos.index(price_section.find_element(*hsl.HOTEL_TAX_SECTION).text):promos.index('Select')]
-        except ValueError:
-            print("Expected word missing from text for - {t}".format(t=self.title))
-            print(promos)
-            if len(promos) > 3:
-                self.promos_trimmed = promos[2:-1]
+            card.location_once_scrolled_into_view
+            self.title = card.find_element(*hsl.HOTEL_TITLE).text
+            price_section = card.find_element(*hsl.HOTEL_PRICE_SECTION)
+            promos = price_section.text.splitlines()
+            try:
+                self.promos_trimmed = promos[1 + promos.index(price_section.find_element(*hsl.HOTEL_TAX_SECTION).text):promos.index('Select')]
+            except ValueError:
+                print("Expected word missing from text for - {t}".format(t=self.title))
+                print(promos)
+                if len(promos) > 3:
+                    self.promos_trimmed = promos[2:-1]
+                else:
+                    self.promos_trimmed = []
+            self.post_tax = price_section.find_element(*hsl.HOTEL_TAX_SECTION).text.replace('After tax ', '')
+            print(self.post_tax)
+            self.price_unit = self.post_tax[0]
+            self.price_pretax = card.find_element(*hsl.HOTEL_PRETAX)
+            self.price_displayed = self.price_pretax.text
+        except NoSuchElementException:
+            print("Exception reading card. Probably no price")
+            self.price_unit = None
+            self.price_pretax = None
+            self.price_displayed = None
+            if len(card.find_elements(*hsl.HOTEL_MEMBER)) >= 1:
+                print("'Member' found, skipping")
+                self.promos_trimmed.append("Member-price")
+            elif len(card.find_elements(*hsl.HOTEL_SOLD_OUT)) >= 1:
+                print("Hotel Sold out")
+                self.promos_trimmed.append("Sold-out")
             else:
-                self.promos_trimmed = []
+                raise
 
     def get_price_dictionary(self):
         return \
@@ -174,7 +181,8 @@ class HotelCard(object):
                 'result':{
                         'list-price':self.price_displayed,
                         'real-price':self.post_tax,
-                        'promos':self.promos_trimmed
+                        'promos':self.promos_trimmed,
+                        'currency':self.price_unit
                     }
 
             }

@@ -9,7 +9,7 @@ import os
 
 class PageExplorer():
 
-    def __init__(self, start_url="http://www.edreams.com", driver_element=None, country=None, no_cookies=True):
+    def __init__(self, start_url="http://www.edreams.com", driver_element=None, country=None, no_cookies=False):
         if driver_element:
             print("Existing driver found")
             self.driver = driver_element

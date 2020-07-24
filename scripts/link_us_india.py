@@ -15,6 +15,9 @@ def perform_search(country, url=URL_1):
     loaded_url = te.check_url()
     te.kill_driver()
     return results, loaded_url
+
+pandas.set_option('display.max_rows', None)
+pandas.set_option('display.max_columns', None)
 usa, usa_url = perform_search('usa')
 india, india_url = perform_search('india')
 end_results = {}

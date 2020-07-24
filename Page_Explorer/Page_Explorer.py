@@ -9,7 +9,7 @@ import os
 
 class PageExplorer():
 
-    def __init__(self, start_url="http://www.edreams.com", driver_element=None, country=None):
+    def __init__(self, start_url="http://www.edreams.com", driver_element=None, country=None, no_cookies=True):
         if driver_element:
             print("Existing driver found")
             self.driver = driver_element
@@ -17,7 +17,8 @@ class PageExplorer():
             os_system = platform.system()
             if os_system == 'Windows':
                 options = webdriver.ChromeOptions()
-                options.add_argument('headless')
+                options.add_experimental_option("detach", True)
+                # options.add_argument('headless')
                 self.driver = webdriver.Chrome("C:\chromedriver.exe", options=options)
                 self.driver.maximize_window()
             elif os_system == 'Linux':
@@ -38,7 +39,10 @@ class PageExplorer():
                 options = webdriver.firefox.options.Options()
                 options.headless = True
                 self.driver = webdriver.Firefox(options=options, firefox_profile=fp)
+            if no_cookies:
+                self.driver.delete_all_cookies()
             self.driver.get(start_url)
+
 
         #Just wait 1 second since it may take a moment for page to properly load
         time.sleep(1)

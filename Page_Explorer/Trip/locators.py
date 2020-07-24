@@ -22,6 +22,7 @@ class HotelSearchLocators():
 
     #Hotels with member element do not list price and should be skipped over
     HOTEL_MEMBER = (By.CLASS_NAME, "list-card-member")
+    HOTEL_SOLD_OUT = (By.CLASS_NAME, "sold-out-btn")
 
     #Text before more hotels that don't exactly match search
     MORE_HOTELS = (By.CLASS_NAME, "more-hotel-title font-bold")
@@ -29,7 +30,7 @@ class HotelSearchLocators():
     #Scroll for more results
     MORE_RESULTS = (By.CLASS_NAME, 'none-ref')
     MORE_RESULTS_2 = (By.CLASS_NAME, 'list-crumb')
-    MORE_RESULTS_3 = (By.CLASS_NAME, 'list-btn-more')
+    MORE_RESULTS_BUTTON = (By.CLASS_NAME, 'list-btn-more')
 
     #Temporarily exists while more results are loading
     RESULTS_LOADING = (By.CLASS_NAME, 'loading')

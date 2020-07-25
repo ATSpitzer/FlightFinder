@@ -41,6 +41,7 @@ class PageExplorer():
                 self.driver = webdriver.Firefox(options=options, firefox_profile=fp)
             if no_cookies:
                 self.driver.delete_all_cookies()
+            self.driver.implicitly_wait(10)
             self.driver.get(start_url)
 
 

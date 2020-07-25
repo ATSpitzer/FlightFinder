@@ -10,7 +10,8 @@ class MyTestCase(unittest.TestCase):
     def setUp(self):
         if platform.system() == 'Windows':
             options = webdriver.ChromeOptions()
-            options.add_argument('headless')
+            # options.add_argument
+            options.add_experimental_option("detach", True)
             self.driver = webdriver.Chrome("C:\chromedriver.exe", options=options)
         elif platform.system() == 'Linux':
             # Using Firefox Connection
@@ -19,7 +20,7 @@ class MyTestCase(unittest.TestCase):
             self.driver = webdriver.Firefox(options=options)
     def tearDown(self):
         super().tearDown()
-        self.driver.close()
+        self.driver.quit()
 
     def test_python_page(self):
         print("Loading 'http://www.python.org'")

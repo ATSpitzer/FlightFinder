@@ -17,10 +17,10 @@ URL_3="https://us.trip.com/hotels/list?city=3789&countryId=66&checkin=2021/01/08
 def perform_search(num, URL):
     te = TripResultsExplorer(start_url=URL)
     te.driver.maximize_window()
-    c = 100
-    for h in te.hotel_list:
-        print("{c}:  {t}".format(c=c,t=h.find_element(*hsl.HOTEL_TITLE).text))
-        c = c + 1
+    # c = 100
+    # for h in te.hotel_list:
+    #     print("{c}:  {t}".format(c=c,t=h.find_element(*hsl.HOTEL_TITLE).text))
+    #     c = c + 1
     r = te.build_results()
     print(json.dumps(te.driver.get_cookies()))
     r_j = json.dumps(r)

@@ -3,9 +3,11 @@ import socket
 import platform
 import os
 import subprocess
+import argparse
 
 class VpnServer():
-    def __init__(self):
+    def __init__(self, local_port=1080):
+        self.local_port=local_port
         os_system = platform.system()
         if os_system == 'Windows':
             self.config_dir="sample_configs"
@@ -21,7 +23,7 @@ class VpnServer():
             {
                 "server":hostname,
                 "server_port":port,
-                "local_port": 1080,
+                "local_port": self.local_port,
                 "password":password,
                 "timeout":60,
                 "method":"aes-256-gcm"
@@ -53,7 +55,11 @@ class VpnServer():
         return completed
 
 if __name__ == '__main__':
-    vpn = VpnServer()
+    parser = argparse.ArgumentParser("Setup and start a vpn server")
+    parser.add_argument('--local-port', '-p', required=False, default=1080, dest='port', type=int, help="Local port (default: 1080)")
+    args = parser.parse_args()
+    client_port = getattr(args, 'port')
+    vpn = VpnServer(local_port=client_port)
     vpn.generate_config_file()
     print('\n. . . . . . . . . . . . . . . \n')
     print(vpn.start_vpn())

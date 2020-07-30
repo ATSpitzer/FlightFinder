@@ -3,17 +3,9 @@ from Page_Explorer.Page_Explorer import PageExplorer
 from Page_Explorer.Trip.locators import HotelSearchLocators as hsl
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-import pandas
-import json
 import time
-import sys
-import datetime
-from io import TextIOWrapper
 
-def print_t(x):
-    y = "[{t}] {x}".format(t=str(datetime.datetime.now()), x=x)
-    print(y)
+
 
 class TripResultsExplorer(PageExplorer):
     SAMPLE_RESULT="https://us.trip.com/hotels/list?city=810&countryId=0&checkin=2020/08/03&checkout=2020/08/04&optionId=810&optionType=City&directSearch=1&optionName=Colombo%20Spa&display=Colombo&crn=1&adult=1&children=0&searchBoxArg=t&travelPurpose=0&ctm_ref=ix_sb_dl&domestic=1"
@@ -27,36 +19,33 @@ class TripResultsExplorer(PageExplorer):
                 return False
 
         # time.sleep(30)
-        bottom = check_bottom()# or scroll_to_bottom
-        h_count=0
+        if scroll_to_bottom:
+            bottom = check_bottom()
+        else:
+            bottom = False
+
         while not bottom:
-            print_t("Sleep for 5 seconds")
+            print("Sleep for 5 seconds")
             time.sleep(5)
-            print_t("Check for more results")
+            print("Check for more results")
             self.try_more_results_button()
             bottom = check_bottom()
 
         hotel_list_page = self.driver.find_element(*hsl.HOTEL_LIST_PAGE)
         self.hotel_list_parent = hotel_list_page.find_element(*hsl.HOTEL_LIST)
         self.hotel_list = self.hotel_list_parent.find_elements(*hsl.HOTEL_CARD)
-        # if len(self.hotel_list) > h_count:
-        #     h_count = len(self.hotel_list)
-        #     print_t(h_count)
-        # else:
-        #     h_count = len(self.hotel_list)
 
         hotel_list_page = self.driver.find_element(*hsl.HOTEL_LIST_PAGE)
         hotel_list_page.location_once_scrolled_into_view
-        # time.sleep(5)
         self.hotel_list_parent = hotel_list_page.find_element(*hsl.HOTEL_LIST)
         self.hotel_list = self.hotel_list_parent.find_elements(*hsl.HOTEL_CARD)
 
     def try_more_results_button(self):
-        print_t("Looking for more entries - pause for 2 seconds")
+        print("Looking for more entries - pause for 2 seconds")
         time.sleep(2)
         buttons = self.driver.find_elements(*hsl.MORE_RESULTS_BUTTON)
         if len(buttons) >= 1:
-            print_t("Load more results button found")
+            print("Load more results button found")
             button = buttons[0]
             button.location_once_scrolled_into_view
             button.click()
@@ -65,20 +54,20 @@ class TripResultsExplorer(PageExplorer):
             self.try_more_results_passive()
 
     def try_more_results_passive(self):
-        print_t("Checking for more results footer")
+        print("Checking for more results footer")
         WebDriverWait(self.driver, 3).until(EC.presence_of_element_located(hsl.MORE_RESULTS_2))
-        print_t("Footer found, pausing for 5 second")
+        print("Footer found, pausing for 5 second")
         time.sleep(5)
         self.driver.find_element(*hsl.MORE_RESULTS_2).location_once_scrolled_into_view
         self.wait_for_loading()
 
     def wait_for_loading(self):
-        print_t("Looking for loading screen")
+        print("Looking for loading screen")
         if len(self.driver.find_elements(*hsl.RESULTS_LOADING)) >= 1:
-            print_t("Loading screen found")
-            print_t("Waiting for there to be no loading")
+            print("Loading screen found")
+            print("Waiting for there to be no loading")
             WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(hsl.RESULTS_LOADING))
-        print_t("There is no loading, pausing for 2 second")
+        print("There is no loading, pausing for 2 second")
         time.sleep(2)
         self.driver.find_element(*hsl.MORE_RESULTS_2).location_once_scrolled_into_view
 
@@ -94,10 +83,10 @@ class TripResultsExplorer(PageExplorer):
             try:
                 hc = HotelCard(card)
             except NoSuchElementException:
-                print_t("Exception reading card {i}".format(i=i))
+                print("Exception reading card {i}".format(i=i))
                 # card.screenshot('Broken_Card_{i}.png'.fromat(i=i))
                 raise
-            print_t("Hotel {i}:\n\t{t}\n\tBefore tax: {p1}\tAfter tax: {p2}".format(i=i, t=hc.title, p1=hc.price_displayed, p2=hc.post_tax))
+            print("Hotel {i}:\n\t{t}\n\tBefore tax: {p1}\tAfter tax: {p2}".format(i=i, t=hc.title, p1=hc.price_displayed, p2=hc.post_tax))
 
     def build_results(self):
         """
@@ -134,21 +123,21 @@ class HotelCard(object):
             try:
                 self.promos_trimmed = promos[1 + promos.index(price_section.find_element(*hsl.HOTEL_TAX_SECTION).text):promos.index('Select')]
             except ValueError:
-                print_t("Expected word missing from text for - {t}".format(t=self.title))
-                print_t(promos)
+                print("Expected word missing from text for - {t}".format(t=self.title))
+                print(promos)
                 if len(promos) > 3:
                     self.promos_trimmed = promos[2:-1]
         except (NoSuchElementException, IndexError):
-            print_t("Exception reading card. Probably no price")
+            print("Exception reading card. Probably no price")
             self.price_unit = None
             self.price_pretax = None
             self.price_displayed = None
             self.post_tax = None
             if len(card.find_elements(*hsl.HOTEL_MEMBER)) >= 1:
-                print_t("'Member' found, skipping")
+                print("'Member' found, skipping")
                 self.promos_trimmed.append("Member-price")
             elif len(card.find_elements(*hsl.HOTEL_SOLD_OUT)) >= 1:
-                print_t("Hotel Sold out")
+                print("Hotel Sold out")
                 self.promos_trimmed.append("Sold-out")
             else:
                 raise
